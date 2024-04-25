@@ -4,15 +4,20 @@ type Tabular = List[Row]
 case class Table (tableName: String, tableData: Tabular) {
 
   override def toString: String = {
-    val csvHeader = header.mkString(", ")
+    val csvHeader = header.mkString(",")
     val csvRows = tableData.map(_.values.mkString(",")).mkString("\n")
     s"$csvHeader\n$csvRows"
   }
 
   def insert(row: Row): Table = {
-    Table(tableName, tableData :+ row)
+    val exists = tableData.exists(_ == row) // Verificăm dacă rândul există deja în tabel
+    if (!exists) {
+      val updatedData = tableData :+ row // Adăugăm rândul doar dacă nu există deja
+      this.copy(tableData = updatedData) // Creăm o nouă instanță a tabelului cu lista de date actualizată
+    } else {
+      this // Dacă rândul există deja, returnăm baza de date nemodificată
+    }
   }
-
   def delete(row: Row): Table = {
     Table(tableName, tableData.filterNot(tableRow => tableRow == row))
   }
@@ -43,8 +48,7 @@ case class Table (tableName: String, tableData: Tabular) {
 
   def select(columns: List[String]): Table = {
     val selectedData = tableData.map { row =>
-      val newRow = columns.map(col => col -> row.getOrElse(col, ""))
-      newRow.toMap
+      columns.map(col => col -> row.getOrElse(col, "")).toMap
     }
     Table(tableName, selectedData)
   }
@@ -63,21 +67,25 @@ case class Table (tableName: String, tableData: Tabular) {
 
 object Table {
   def apply(name: String, s: String): Table = {
-    val rows = s.split("\n").toList.map { line =>
-      val values = line.split(",").map(_.trim)
-      val headers = values.headOption.map(_.split("\t").map(_.trim).toList).getOrElse(List.empty)
-      val rowValues = values.drop(1)
-      headers.zip(rowValues).toMap
+    val lines = s.split("\n")
+    if (lines.length < 2) {
+      throw new IllegalArgumentException("Invalid CSV format: must have at least one header line and one data line")
     }
-    new Table(name, rows)
+
+    val headers = lines.head.split(",").toList
+    val data = lines.tail.map(_.split(",").toList).map(row => headers.zip(row).toMap)
+    val tabularData: Tabular = data.toList // Convertim datele în tipul Tabular
+    new Table(name, tabularData)
   }
 }
+
 
 
 
 extension (table: Table) {
   // Implement indexing here, find the right function to override
   def apply(i: Int): Table = {
+    // trebuie sa returnezi un table cu constructorul Table(ta
     Table(table.tableName, List(table.tableData(i)))
   }
 }
