@@ -4,13 +4,67 @@ trait PP_SQL_DB{
   def eval: Option[Database]
 }
 
-case class CreateTable(database: Database, tableName: String) extends PP_SQL_DB{
-  def eval: Option[Database] = ???
+
+trait PP_SQL_Table{
+  def eval: Option[Table]
 }
 
-case class DropTable(database: Database, tableName: String) extends PP_SQL_DB{
-  def eval: Option[Database] = ???
+
+case class CreateTable(database: Database, tableName: String) extends PP_SQL_DB {
+  def eval: Option[Database] = {
+    Some(database.create(tableName))
+  }
 }
+
+
+case class DropTable(database: Database, tableName: String) extends PP_SQL_DB {
+  def eval: Option[Database] = {
+    Some(database.drop(tableName))
+  }
+}
+
+case class SelectTables(database: Database, tableNames: List[String]) extends PP_SQL_DB {
+  def eval: Option[Database] = {
+    database.selectTables(tableNames)
+  }
+}
+
+case class JoinTables(database: Database, table1: String, column1: String, table2: String, column2: String) extends PP_SQL_DB {
+  def eval: Option[Database] = {
+    val newTableName = s"$table1$table2"
+    database.join(table1, column1, table2, column2).map { newTable =>
+      val newDatabase = Database(database.tables :+ newTable)
+      newDatabase.create(newTableName)
+    }
+  }
+}
+
+case class InsertRow(table: Table, values: Tabular) extends PP_SQL_Table{
+  def eval: Option[Table] = Some(table.insert(values.head)) // Insertăm doar primul rând din lista de valori
+}
+
+case class UpdateRow(table: Table, condition: FilterCond, updates: Map[String, String]) extends PP_SQL_Table{
+  def eval: Option[Table] = Some(table.update(condition, updates))
+}
+
+case class SortTable(table: Table, column: String) extends PP_SQL_Table{
+  def eval: Option[Table] = Some(table.sort(column))
+}
+
+case class DeleteRow(table: Table, row: Row) extends PP_SQL_Table{
+  def eval: Option[Table] = Some(table.delete(row))
+}
+
+case class FilterRows(table: Table, condition: FilterCond) extends PP_SQL_Table{
+  def eval: Option[Table] = Some(table.filter(condition))
+}
+
+case class SelectColumns(table: Table, columns: List[String]) extends PP_SQL_Table{
+  def eval: Option[Table] = Some(table.select(columns))
+}
+
+
+
 
 implicit def PP_SQL_DB_Create_Drop(t: (Option[Database], String, String)): Option[PP_SQL_DB] = {
   t match {
@@ -20,9 +74,9 @@ implicit def PP_SQL_DB_Create_Drop(t: (Option[Database], String, String)): Optio
   }
 }
 
-case class SelectTables(database: Database, tableNames: List[String]) extends PP_SQL_DB{
-  def eval: Option[Database] = ???
-}
+
+
+
 
 implicit def PP_SQL_DB_Select(t: (Option[Database], String, List[String])): Option[PP_SQL_DB] = {
   t match {
@@ -31,9 +85,6 @@ implicit def PP_SQL_DB_Select(t: (Option[Database], String, List[String])): Opti
   }
 }
 
-case class JoinTables(database: Database, table1: String, column1: String, table2: String, column2: String) extends PP_SQL_DB{
-  def eval: Option[Database] = ???
-}
 
 implicit def PP_SQL_DB_Join(t: (Option[Database], String, String, String, String, String)): Option[PP_SQL_DB] = {
   t match {
@@ -42,13 +93,7 @@ implicit def PP_SQL_DB_Join(t: (Option[Database], String, String, String, String
   }
 }
 
-trait PP_SQL_Table{
-  def eval: Option[Table]
-}
 
-case class InsertRow(table:Table, values: Tabular) extends PP_SQL_Table{
-  def eval: Option[Table] = ???
-}
 
 implicit def PP_SQL_Table_Insert(t: (Option[Table], String, Tabular)): Option[PP_SQL_Table] = {
   t match {
@@ -57,9 +102,6 @@ implicit def PP_SQL_Table_Insert(t: (Option[Table], String, Tabular)): Option[PP
   }
 }
 
-case class UpdateRow(table: Table, condition: FilterCond, updates: Map[String, String]) extends PP_SQL_Table{
-  def eval: Option[Table] = ???
-}
 
 implicit def PP_SQL_Table_Update(t: (Option[Table], String, FilterCond, Map[String, String])): Option[PP_SQL_Table] = {
   t match {
@@ -68,9 +110,6 @@ implicit def PP_SQL_Table_Update(t: (Option[Table], String, FilterCond, Map[Stri
   }
 }
 
-case class SortTable(table: Table, column: String) extends PP_SQL_Table{
-  def eval: Option[Table] = ???
-}
 
 implicit def PP_SQL_Table_Sort(t: (Option[Table], String, String)): Option[PP_SQL_Table] = {
   t match {
@@ -79,9 +118,7 @@ implicit def PP_SQL_Table_Sort(t: (Option[Table], String, String)): Option[PP_SQ
   }
 }
 
-case class DeleteRow(table: Table, row: Row) extends PP_SQL_Table{
-  def eval: Option[Table] = ???
-}
+
 
 implicit def PP_SQL_Table_Delete(t: (Option[Table], String, Row)): Option[PP_SQL_Table] = {
   t match {
@@ -90,9 +127,6 @@ implicit def PP_SQL_Table_Delete(t: (Option[Table], String, Row)): Option[PP_SQL
   }
 }
 
-case class FilterRows(table: Table, condition: FilterCond) extends PP_SQL_Table{
-  def eval: Option[Table] = ???
-}
 
 implicit def PP_SQL_Table_Filter(t: (Option[Table], String, FilterCond)): Option[PP_SQL_Table] = {
   t match {
@@ -101,9 +135,7 @@ implicit def PP_SQL_Table_Filter(t: (Option[Table], String, FilterCond)): Option
   }
 }
 
-case class SelectColumns(table: Table, columns: List[String]) extends PP_SQL_Table{
-  def eval: Option[Table] = ???
-}
+
 
 implicit def PP_SQL_Table_Select(t: (Option[Table], String, List[String])): Option[PP_SQL_Table] = {
   t match {
@@ -114,3 +146,5 @@ implicit def PP_SQL_Table_Select(t: (Option[Table], String, List[String])): Opti
 
 def queryT(p: Option[PP_SQL_Table]): Option[Table] = p.flatMap(_.eval)
 def queryDB(p: Option[PP_SQL_DB]): Option[Database] = p.flatMap(_.eval)
+
+

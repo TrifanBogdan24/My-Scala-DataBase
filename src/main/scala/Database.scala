@@ -51,12 +51,19 @@ case class Database(tables: List[Table]) {
       newRow
     }
 
-    table1Data.flatMap { row1 =>
-      val matchingRows = table2Data.filter(row2 => row1.getOrElse(c1, "") == row2.getOrElse(c2, ""))
-      matchingRows.map(mergeRows(row1, _))
-    }
-  }
+    val table1Indexed = table1Data.map(row => row.getOrElse(c1, "") -> row).toMap
+    val table2Indexed = table2Data.map(row => row.getOrElse(c2, "") -> row).toMap
 
+    val allKeys = table1Indexed.keySet ++ table2Indexed.keySet
+
+    val result = allKeys.map { key =>
+      val row1 = table1Indexed.getOrElse(key, Map.empty)
+      val row2 = table2Indexed.getOrElse(key, Map.empty)
+      mergeRows(row1, row2)
+    }
+
+    result.toList
+  }
   // implement indexing here
   def apply(i: Int): Table = {
     tables(i)
