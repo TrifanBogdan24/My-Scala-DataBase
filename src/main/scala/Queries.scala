@@ -21,28 +21,14 @@ object Queries {
   }
 
 
-  def youngAdultHobbiesJ(db: Database): Option[Table] = {
-    // Realizăm join între tabelele "People" și "Hobbies" pe baza coloanei "name"
-    val joinedTableOpt = db.join("People", "name", "Hobbies", "name")
 
-    joinedTableOpt.map { joinedTable =>
-      // Definim condițiile pentru filtrare
-      val ageUnder25 = Field("age", _.toInt < 25)
-      val startsWithJ = Field("name", _.startsWith("J"))
-      val hasHobby = Field("hobby", _.nonEmpty)
-
-      // Aplicăm condițiile pentru a filtra tabela
-      val filteredTable = joinedTable.filter(
-        And(
-          And(ageUnder25, startsWithJ),
-          hasHobby
-        )
-      )
-
-      // Extragem doar coloanele "name" și "hobby"
-      filteredTable.select(List("name", "hobby"))
-    }
-  }
-
+  def youngAdultHobbiesJ(db: Database): Option[Table] =
+    queryDB(Some(JoinTables(db, "People", "name", "Hobbies", "name")))
+      .flatMap(db =>
+        queryT(Some(FilterRows(Table("JoinedTables", db.tables.head.tableData),
+          And(And(Field("age", _ < "25"), Field("name", _.startsWith("J"))),
+            Field("hobby", _.nonEmpty)))))
+          .flatMap(table =>
+            queryT(Some(SelectColumns(table, List("name", "hobby"))))))
 
 }

@@ -26,44 +26,84 @@ case class Database(tables: List[Table]) {
     }
   }
 
+
   def join(table1: String, c1: String, table2: String, c2: String): Option[Table] = {
     val t1 = tables.find(_.tableName == table1)
     val t2 = tables.find(_.tableName == table2)
 
-    (t1, t2) match {
-      case (Some(table1), Some(table2)) =>
-        val joinedData = joinTables(table1.tableData, table2.tableData, c1, c2)
-        Some(Table(s"${table1.tableName}_${table2.tableName}", joinedData))
+    if (t1.isEmpty || t2.isEmpty) return None
 
-      case _ => None
+    val data1 = t1.get.tableData
+    val data2 = t2.get.tableData
+
+    val joinColumn1 = c1
+    val joinColumn2 = c2
+
+    val joinedData = for {
+      row1 <- data1
+      row2 <- data2
+      if row1(joinColumn1) == row2(joinColumn2) || (row1(joinColumn1) == "" && row2(joinColumn2) == "")
+    } yield {
+      val joinedRow = row1 ++ row2.filterKeys(_ != joinColumn2)
+        .map { case (k, v2) =>
+          val v1 = row1.getOrElse(k, "")
+          val newValue = if (v1.isEmpty) v2 else if (v1 != v2) s"$v1;$v2" else v1
+          k -> newValue
+        }
+      joinedRow
+    }
+
+    val additionalRowsTable1 = data1.filterNot(row1 => joinedData.exists(joinedRow => joinedRow(joinColumn1) == row1(joinColumn1)))
+      .map(row1 => {
+        val newRow = row1 ++ data2.head.filterKeys(_ != joinColumn2).map { case (k, _) => k -> row1.getOrElse(k, "") }
+        newRow
+      })
+
+
+    val optTable1 = tables.find(_.name == table1)
+    val optTable2 = tables.find(_.name == table2)
+
+    (optTable1, optTable2) match {
+      case (Some(t1), Some(t2)) =>
+        // Extragem coloanele specificate pentru join
+        val col1 = t1.header.indexOf(c1)
+        val col2 = t2.header.indexOf(c2)
+
+        // Realizăm unirea rândurilor din tabele
+        val joinedData1 = for {
+          row1 <- t1.data
+          row2 <- t2.data
+          if row1(c1) == row2(c2) || (row1(c1).isEmpty && row2(c2).isEmpty)
+        } yield {
+          // Creăm un nou Map care să conțină toate perechile cheie-valoare din ambele rânduri
+          val newRow = row1 ++ row2
+
+          // Actualizăm valoarea pentru cheia c1 conform condițiilor cerute
+          val updatedValue = if (row1(c1).isEmpty) row2(c2) else row1(c1)
+          val updatedRow = newRow.updated(c1, updatedValue)
+
+          updatedRow
+        }
+
+        val data1 = optTable1.get.tableData
+        val data2 = optTable2.get.tableData
+
+
+        val missingRows2 = for {
+          row2 <- t2.data
+          if !joinedData1.exists(row => row(c2) == row2(c2))
+        } yield {
+          // Eliminăm adăugarea coloanei "person_name" dacă deja există în tabelul de rezultate
+          val newRow = (t1.header.map(_ -> "").toMap + (c1 -> row2(c2))) ++ row2.filterKeys(_ != c2).filterKeys(_ != c2)
+          newRow
+        }
+
+        val newTableData = joinedData ++ additionalRowsTable1 ++ missingRows2
+        val newTable = Table(s"${table1}$table2", newTableData.map(_.toMap))
+        Some(newTable)
     }
   }
 
-  // Funcție recursivă pentru join
-  private def joinTables(table1Data: Tabular, table2Data: Tabular, c1: String, c2: String): Tabular = {
-    def mergeRows(row1: Row, row2: Row): Row = {
-      val commonKeys = row1.keys.toSet intersect row2.keys.toSet
-      val newRow = (row1 ++ row2).map {
-        case (k, v) if commonKeys.contains(k) => k -> v
-        case (k, v) if k.endsWith("_2") => k -> v
-        case (k, v) => k -> row1.getOrElse(k, "") // Use value from row1 if not present in row2
-      }
-      newRow
-    }
-
-    val table1Indexed = table1Data.map(row => row.getOrElse(c1, "") -> row).toMap
-    val table2Indexed = table2Data.map(row => row.getOrElse(c2, "") -> row).toMap
-
-    val allKeys = table1Indexed.keySet ++ table2Indexed.keySet
-
-    val result = allKeys.map { key =>
-      val row1 = table1Indexed.getOrElse(key, Map.empty)
-      val row2 = table2Indexed.getOrElse(key, Map.empty)
-      mergeRows(row1, row2)
-    }
-
-    result.toList
-  }
   // implement indexing here
   def apply(i: Int): Table = {
     tables(i)
