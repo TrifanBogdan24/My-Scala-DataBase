@@ -107,11 +107,11 @@ class TestFilter extends AnyFunSpec with BeforeAndAfterAll {
     }
     it("7") {
       val any: FilterCond = Any(List(
-          Field("id", _ == "John"),
-          Field("hobby", _ == "Football"),
-          Field("name", _.startsWith("J")),
-          Field("name", _.endsWith("n"))
-        ))
+        Field("id", _ == "John"),
+        Field("hobby", _ == "Football"),
+        Field("name", _.startsWith("J")),
+        Field("name", _.endsWith("n"))
+      ))
       assert(any.eval(Map("id" -> "John", "hobby" -> "Football", "name" -> "John")).get)
       assert(any.eval(Map("id" -> "1", "hobby" -> "Football", "name" -> "John")).get)
       assert(any.eval(Map("id" -> "1", "hobby" -> "Football", "name" -> "Jack")).get)
