@@ -21,14 +21,21 @@ object Queries {
   }
 
 
+  def youngAdultHobbiesJ(db: Database): Option[Table] = {
+    val peopleTable = db.tables.find(_.tableName == "People")
+    val hobbiesTable = db.tables.find(_.tableName == "Hobbies")
 
-  def youngAdultHobbiesJ(db: Database): Option[Table] =
-    queryDB(Some(JoinTables(db, "People", "name", "Hobbies", "name")))
-      .flatMap(db =>
-        queryT(Some(FilterRows(Table("JoinedTables", db.tables.head.tableData),
-          And(And(Field("age", _ < "25"), Field("name", _.startsWith("J"))),
-            Field("hobby", _.nonEmpty)))))
-          .flatMap(table =>
-            queryT(Some(SelectColumns(table, List("name", "hobby"))))))
+    (peopleTable, hobbiesTable) match {
+      case (Some(people), Some(hobbies)) =>
+        val filteredPeople = people.tableData.filter(row => row("name").startsWith("J") && row("age").toInt < 25)
+        val joinedData = filteredPeople.flatMap { person =>
+          val personName = person("name")
+          val matchingHobbies = hobbies.tableData.filter(_("name") == personName)
+          matchingHobbies.map(hobby => Map("name" -> personName, "hobby" -> hobby("hobby")))
+        }
+        Some(Table("YoungAdultHobbies", joinedData))
+      case _ => None
+    }
+  }
 
 }
