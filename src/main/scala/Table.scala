@@ -10,12 +10,12 @@ case class Table (tableName: String, tableData: Tabular) {
   }
 
   def insert(row: Row): Table = {
-    val exists = tableData.exists(_ == row) // Verificăm dacă rândul există deja în tabel
+    val exists = tableData.exists(_ == row) // Verificam daca randul exista deja în tabel
     if (!exists) {
-      val updatedData = tableData :+ row // Adăugăm rândul doar dacă nu există deja
-      this.copy(tableData = updatedData) // Creăm o nouă instanță a tabelului cu lista de date actualizată
+      val updatedData = tableData :+ row // Adaugam randul doar daca nu exista deja
+      this.copy(tableData = updatedData) // Cream o noua instanta a tabelului cu lista de date actualizata
     } else {
-      this // Dacă rândul există deja, returnăm baza de date nemodificată
+      this // Daca randul exista deja, returnam baza de date nemodificata
     }
   }
 
@@ -82,6 +82,7 @@ object Table {
 
 extension (table: Table) {
   def apply(i: Int): Table = {
+    // pentru a accesa coloanele prin indecsi `List....`:
     Table(table.tableName, List(table.tableData(i)))
   }
 }

@@ -16,15 +16,15 @@ object Queries {
 
 
   def youngAdultHobbiesJ(db: Database): Option[Table] =
-    db.tables.find(_.tableName == "People")
+    db.tables.find(_.tableName == "People")         // SELECT
       .flatMap(peopleTable =>
-        db.tables.find(_.tableName == "Hobbies")
+        db.tables.find(_.tableName == "Hobbies")    // JOIN
           .map(hobbiesTable =>
-            Table("YoungAdultHobbies", peopleTable.tableData
-              .filter(row => row("name").startsWith("J") && row("age").toInt < 25)
+            Table("YoungAdultHobbies", peopleTable.tableData                                  // CREATE
+              .filter(row => row("name").startsWith("J") && row("age").toInt < 25)            // FILTER
               .flatMap(person =>
                 hobbiesTable.tableData.filter(_("name") == person("name"))
-                  .map(hobby => Map("name" -> person("name"), "hobby" -> hobby("hobby")))
+                  .map(hobby => Map("name" -> person("name"), "hobby" -> hobby("hobby")))     // FILTER
               )
             )
           )

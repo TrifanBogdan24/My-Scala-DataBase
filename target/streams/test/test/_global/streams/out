@@ -1,11 +1,28 @@
-[0m[[0m[0mdebug[0m] [0m[0mRunning TaskDef(TestSQL, org.scalatest.tools.Framework$$anon$1@58c8af92, false, [SuiteSelector])[0m
-[0m[[0m[0mdebug[0m] [0m[0mRunning TaskDef(TestFilter, org.scalatest.tools.Framework$$anon$1@58c8af92, false, [SuiteSelector])[0m
-[0m[[0m[0mdebug[0m] [0m[0mRunning TaskDef(TestDatabase, org.scalatest.tools.Framework$$anon$1@58c8af92, false, [SuiteSelector])[0m
-[0m[[0m[0mdebug[0m] [0m[0mRunning TaskDef(TestTable, org.scalatest.tools.Framework$$anon$1@58c8af92, false, [SuiteSelector])[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning TaskDef(TestTable, org.scalatest.tools.Framework$$anon$1@5158444f, false, [SuiteSelector])[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning TaskDef(TestSQL, org.scalatest.tools.Framework$$anon$1@5158444f, false, [SuiteSelector])[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning TaskDef(TestFilter, org.scalatest.tools.Framework$$anon$1@5158444f, false, [SuiteSelector])[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning TaskDef(TestDatabase, org.scalatest.tools.Framework$$anon$1@5158444f, false, [SuiteSelector])[0m
 [0m[[0m[0minfo[0m] [0m[0m[32mTestFilter:[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32mimplicit[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32msyntactic sugars[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32mTestTable:[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32mapply[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32mtoString[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32mfilter[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32mdelete[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32minsert[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32msort[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32mselect[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32mupdate[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32m- 2[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32m- 3[0m[0m
@@ -29,23 +46,6 @@
 [0m[[0m[0minfo[0m] [0m[0m[32mindexing[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32mjoin[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32mTestTable:[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32mapply[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32mtoString[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32mfilter[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32mdelete[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32minsert[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32msort[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32mselect[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[32mupdate[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32mTestSQL:[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32mTDA DB[0m[0m
@@ -79,7 +79,7 @@
 [0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32myoungAdultHobbiesJ[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32m- 1[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[36mRun completed in 240 milliseconds.[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[36mRun completed in 259 milliseconds.[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[36mTotal number of tests run: 50[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[36mSuites: completed 4, aborted 0[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[36mTests: succeeded 50, failed 0, canceled 0, ignored 0, pending 0[0m[0m
