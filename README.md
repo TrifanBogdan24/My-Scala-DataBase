@@ -14,7 +14,6 @@ providing an elegant and easy-to-understand syntax for queries.
 
 
 ## Tables
----
 
 My DataBases reads a `CSV` file and stores data in a table-like data structure, for example:
 
@@ -65,7 +64,6 @@ case class Table(tableName: String, tableData: Tabular) {
 
 
 ## Filtering a Table
----
 
 Futhermore, the user can apply multiple `filters` on the `Table` instances:
 ```
@@ -121,7 +119,6 @@ extension (f: FilterCond) {
 
 
 ## DataBase
----
 
 
 A database contains one or more tables, on which a user can apply a series of operations:
@@ -148,7 +145,6 @@ case class Database(tables: List[Table]) {
 
 
 ## Query Languge API
----
 
 
 
@@ -171,7 +167,6 @@ If a query generates an **error**, it will **propagate** if the result is necess
 
 
 ## Testing
----
 
 
 In order to test the source code,
