@@ -1,6 +1,8 @@
 import scala.language.implicitConversions
 
-trait FilterCond {def eval(r: Row): Option[Boolean]}
+trait FilterCond {
+  def eval(r: Row): Option[Boolean]
+}
 
 case class Field(colName: String, predicate: String => Boolean) extends FilterCond {
   override def eval(r: Row): Option[Boolean] = {
