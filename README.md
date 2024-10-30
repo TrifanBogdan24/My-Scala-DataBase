@@ -7,7 +7,7 @@ which uses a DataBase implemented by me, written in Scala.
 
 The source code keeps a **Functional Paradigm**
 (variables are constants and immutable).
-It leverages extension methods and implicit conversions to simplify function calls, 
+It leverages `extension` methods and `implicit` conversions to simplify function calls, 
 providing an elegant and easy-to-understand syntax for queries.
 
 
